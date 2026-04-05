@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    .hospital-bg-patient {
+        background-image: linear-gradient(rgba(11, 23, 39, 0.75), rgba(0, 123, 143, 0.75)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: calc(100vh - 76px);
+        padding: 50px 0 80px 0;
+    }
+
+    .patient-header {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 40px;
+        color: white;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    }
+
+    .consultation-slip {
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+    }
+
+    .consultation-slip::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+    }
+
+    .consultation-slip:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+    }
+
+    .slip-header {
+        background: #f8fbff;
+        padding: 20px 25px;
+        border-bottom: 1px dashed #c0d1e0;
+    }
+
+    .slip-body {
+        padding: 25px;
+        flex-grow: 1;
+    }
+
+    .slip-footer {
+        padding: 20px 25px;
+        background: #f8fbff;
+        border-top: 1px dashed #c0d1e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-cancel-appt {
+        background: transparent;
+        color: #ff6b6b;
+        border: 1px solid #ff6b6b;
+        transition: all 0.3s;
+    }
+
+    .btn-cancel-appt:hover {
+        background: #ff6b6b;
+        color: white;
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+    }
+</style>
+
+<div class="hospital-bg-patient">
+    <div class="container container-fluid">
+        <div class="patient-header">
+            <img src="https://img.icons8.com/color/96/health-checkup.png" width="80"
+                class="mb-3 d-inline-block shadow-sm rounded-circle bg-white p-2">
+            <h2 class="fw-bold mb-2">My Prescriptions & Appointments</h2>
+            <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 1.1rem;">Review and manage your medical
+                consultations.</p>
+        </div>
+
+        <div class="row justify-content-center g-4">
+            {% for appt in appointments %}
+            <div class="col-md-6 col-lg-4">
+                <div class="consultation-slip">
+                    <div class="slip-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-dark"><i class="bi bi-calendar-event me-2"
+                                style="color: #007b8f;"></i> {{ appt[6] }}</span>
+                        <span class="badge rounded-pill px-3 py-2 shadow-sm"
+                            style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: white;"><i
+                                class="bi bi-clock-fill me-1"></i> {{ appt[7] }}</span>
+                    </div>
+
+                    <div class="slip-body">
+                        <h5 class="fw-bold mb-3" style="color: #004b5c;">
+                            <img src="https://img.icons8.com/color/48/medical-doctor.png" width="28"
+                                class="me-2 align-bottom">{{ appt[5] }}
+                        </h5>
+
+                        <div class="bg-light p-3 rounded-3 mt-3 border">
+                            <div class="small fw-bold text-secondary mb-1 text-uppercase letter-spacing: 1px;">Patient
+                            </div>
+                            <div class="text-dark fw-bold mb-3 d-flex justify-content-between">
+                                <span>{{ appt[2] }}</span> <span class="badge bg-secondary">Age: {{ appt[3] }}</span>
+                            </div>
+
+                            <div class="small fw-bold text-secondary mb-1 text-uppercase letter-spacing: 1px;">Reason
+                            </div>
+                            <div class="small fst-italic text-muted">"{{ appt[8] }}"</div>
+                        </div>
+                    </div>
+
+                    <div class="slip-footer">
+                        <div>
+                            <div class="small fw-bold text-secondary text-uppercase mb-1">Consultation Fee</div>
+                            <div class="fw-bold text-success fs-5">₹{{ appt[9] }}</div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a href="/receipt/{{ appt[0] }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-3 py-2 me-2 shadow-sm fw-bold"><i class="bi bi-printer me-1"></i> Receipt</a>
+                            <a href="/cancel_appointment/{{ appt[0] }}"
+                                class="btn btn-cancel-appt btn-sm rounded-pill px-4 py-2 fw-bold"
+                                onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="glass-form-card d-inline-block p-5 text-white"
+                    style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                    <img src="https://img.icons8.com/color/96/empty-bed.png" width="80" class="mb-4 opacity-75">
+                    <h3 class="fw-bold mb-3">No Active Bookings</h3>
+                    <p class="mb-4" style="color: rgba(255,255,255,0.8);">You haven't booked any medical sessions yet.
+                    </p>
+                    <a href="/book" class="btn rounded-pill px-5 py-3 fw-bold"
+                        style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">Book
+                        Now</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-success">Create Account</h2>
+                    <p class="text-muted">Join us to book appointments easily</p>
+                </div>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="name" class="form-control" id="regName" placeholder="Name" required>
+                        <label for="regName">Full Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control" id="regEmail" placeholder="name@example.com" required>
+                        <label for="regEmail">Email Address</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" name="password" class="form-control" id="regPass" placeholder="Password" required>
+                        <label for="regPass">Password</label>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 btn-lg">Sign Up</button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted">Already have an account? <a href="/patient_login" class="fw-bold text-decoration-none">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

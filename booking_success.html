@@ -1,0 +1,198 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        background-color: #0b0f19;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .success-bg-wrapper {
+        position: relative;
+        width: 100%;
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 50% 50%, #1a2a42 0%, #0b0f19 100%);
+        overflow: hidden;
+    }
+
+    /* Animated background elements */
+    .success-bg-wrapper::before,
+    .success-bg-wrapper::after {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.5;
+        animation: float 8s infinite alternate ease-in-out;
+    }
+
+    .success-bg-wrapper::before {
+        background: #00f2fe;
+        top: -100px;
+        left: -100px;
+    }
+
+    .success-bg-wrapper::after {
+        background: #4facfe;
+        bottom: -100px;
+        right: -100px;
+        animation-delay: -4s;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0) scale(1);
+        }
+
+        100% {
+            transform: translateY(30px) scale(1.1);
+        }
+    }
+
+    .glass-success-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 60px 40px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        animation: popup 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @keyframes popup {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .success-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 30px;
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        position: relative;
+    }
+
+    .success-icon-wrapper::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+            border-width: 4px;
+        }
+
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+            border-width: 1px;
+        }
+    }
+
+    .success-icon-wrapper i {
+        font-size: 3rem;
+        color: white;
+    }
+
+    .success-title {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+
+    .success-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.05rem;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    .success-actions .btn {
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+
+    .btn-dashboard {
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 8px 15px rgba(79, 172, 254, 0.3);
+    }
+
+    .btn-dashboard:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 20px rgba(79, 172, 254, 0.4);
+        color: white;
+    }
+
+    .btn-print {
+        background: transparent;
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-print:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.4);
+        color: white;
+    }
+</style>
+
+<div class="success-bg-wrapper">
+    <div class="glass-success-card">
+        <div class="success-icon-wrapper">
+            <i class="bi bi-check-lg"></i>
+        </div>
+        <h2 class="success-title">Registration Successful!</h2>
+        <p class="success-text">Your appointment has been registered and confirmed. A detailed receipt with your slot
+            timings has been sent to your registered email address.</p>
+
+        <div class="success-actions d-grid gap-3">
+            <a href="/my_appointments" class="btn btn-dashboard">Go to Dashboard</a>
+            {% if appt_id %}
+            <a href="/receipt/{{ appt_id }}" class="btn btn-print text-decoration-none d-flex align-items-center justify-content-center">Print Receipt</a>
+            {% else %}
+            <button onclick="window.print()" class="btn btn-print">Print Receipt</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

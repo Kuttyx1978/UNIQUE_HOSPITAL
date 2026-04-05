@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    .hospital-bg-doctor {
+        background-image: linear-gradient(rgba(11, 23, 39, 0.8), rgba(0, 123, 143, 0.8)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: calc(100vh - 76px);
+        padding: 40px 0 60px 0;
+    }
+
+    .dashboard-header {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 143, 0.05);
+    }
+
+    .table thead th {
+        background-color: #f1f6fa;
+        color: #004b5c;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 15px;
+        border-bottom: 2px solid #007b8f;
+    }
+
+    .table td {
+        padding: 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .btn-action {
+        background: #fff;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        transition: all 0.3s;
+    }
+
+    .btn-action:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+</style>
+
+<div class="hospital-bg-doctor">
+    <div class="container container-fluid">
+        <div class="dashboard-header d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1"><img src="https://img.icons8.com/color/96/medical-doctor.png" width="40"
+                        class="me-2 align-top" alt="Doc">Welcome, <span style="color: #00f2fe;">{{ doc_name }}</span>
+                </h2>
+                <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 1.1rem;">Here is your upcoming patient
+                    schedule.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Patient Name</th>
+                            <th>Age & Contact</th>
+                            <th>Symptoms / Reason</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in appointments %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark" style="font-size: 1.1rem;">{{ appt[6] }}</div>
+                                <span class="badge rounded-pill mt-1 px-3 py-2 shadow-sm"
+                                    style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: white; font-weight: 600;">
+                                    <i class="bi bi-clock me-1"></i>{{ appt[7] }}
+                                </span>
+                            </td>
+                            <td class="fw-bold text-dark fs-5">{{ appt[2] }}</td>
+                            <td>
+                                <div class="text-secondary fw-semibold"><img
+                                        src="https://img.icons8.com/color/48/age.png" width="20" class="me-1 align-top">
+                                    Age: {{ appt[3] }}</div>
+                                <div class="text-secondary fw-semibold mt-1"><img
+                                        src="https://img.icons8.com/color/48/phone.png" width="20"
+                                        class="me-1 align-top"> {{ appt[4] }}</div>
+                            </td>
+                            <td style="max-width: 300px;">
+                                <div class="p-2 rounded bg-light border fst-italic text-secondary small">
+                                    "{{ appt[8] }}"
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <a href="/cancel_appointment/{{ appt[0] }}"
+                                    class="btn btn-action btn-sm rounded-pill px-4 py-2 fw-bold"
+                                    onclick="return confirm('Clear this patient from your schedule?')">
+                                    <i class="bi bi-check-lg me-1"></i>Mark Done
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <img src="https://img.icons8.com/color/96/coffee-to-go.png" width="64"
+                                    class="mb-3 d-block mx-auto opacity-75">
+                                <h5 class="text-muted fw-bold">No patients scheduled.</h5>
+                                <p class="text-muted mb-0">Enjoy your break!</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,212 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    .hospital-bg {
+        background-image: linear-gradient(rgba(0, 30, 48, 0.7), rgba(0, 123, 143, 0.7)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: calc(100vh - 76px);
+        padding: 60px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .glass-form-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-control,
+    .form-select {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 123, 143, 0.2);
+        padding: 12px 15px;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #007b8f;
+        box-shadow: 0 0 0 4px rgba(0, 123, 143, 0.1);
+    }
+
+    .slot {
+        width: 100px;
+        padding: 12px 5px;
+        border: 2px solid #007b8f;
+        background: rgba(255, 255, 255, 0.9);
+        color: #007b8f;
+        font-weight: 700;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.9rem;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .slot:hover:not(.taken) {
+        background: #007b8f;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 123, 143, 0.3);
+    }
+
+    .slot.active {
+        background: #007b8f !important;
+        color: white !important;
+        box-shadow: 0 5px 15px rgba(0, 123, 143, 0.4);
+        border-color: #006070;
+    }
+
+    .slot.taken {
+        background: #f8d7da !important;
+        border-color: #f5c2c7 !important;
+        color: #dc3545 !important;
+        cursor: not-allowed;
+        opacity: 0.6;
+        text-decoration: line-through;
+        box-shadow: none;
+    }
+
+    .btn-brand {
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        color: white;
+        font-weight: 700;
+        border: none;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-brand:hover {
+        background: linear-gradient(135deg, #00d2de 0%, #3f8cce 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+    }
+</style>
+
+<div class="hospital-bg">
+    <div class="container container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="glass-form-card p-4 p-md-5">
+                    <div class="text-center mb-5">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-white text-primary rounded-circle mb-3 shadow-sm"
+                            style="width: 80px; height: 80px; color: #007b8f !important;">
+                            <img src="https://img.icons8.com/color/96/stethoscope.png" alt="Stethoscope" width="50">
+                        </div>
+                        <h2 class="fw-bold" style="color: #004b5c;">Schedule Clinic Appointment</h2>
+                        <p class="text-muted">Select an available 15-minute consultation slot.</p>
+                    </div>
+
+                    <form method="POST">
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small text-uppercase">1.
+                                    Specialist</label>
+                                <select id="doctor" name="doctor" class="form-select shadow-sm" required>
+                                    <option value="" disabled selected>Choose Doctor...</option>
+                                    <option value="Dr. Ram (Cardiology)">Dr. Ram (Cardiology)</option>
+                                    <option value="Dr. Priya (Neurology)">Dr. Priya (Neurology)</option>
+                                    <option value="Dr. Shiva (General)">Dr. Shiva (General)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small text-uppercase">2. Date</label>
+                                <input type="date" id="date" name="date" class="form-control shadow-sm"
+                                    value="{{ pre_date }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label
+                                class="form-label fw-bold text-secondary small text-uppercase d-block text-center mb-3">3.
+                                Available Slots</label>
+                            <div id="grid" class="d-flex flex-wrap justify-content-center gap-2 p-4 rounded-4"
+                                style="background: rgba(0,123,143,0.05); border: 1px dashed rgba(0,123,143,0.3);">
+                                <p class="text-muted small m-0"><i class="bi bi-info-circle me-1"></i> Please select a
+                                    doctor and date first.</p>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="time" id="sTime" required>
+                        <input type="hidden" name="name" value="{{ default_name }}">
+                        <input type="hidden" name="fee" id="fInput">
+
+                        <div id="info"
+                            class="alert text-white border-0 shadow-sm d-none py-3 text-center mb-4 rounded-4"
+                            style="background: #007b8f;">
+                            <i class="bi bi-check-circle-fill me-2 fs-5 align-middle"></i>
+                            <span class="align-middle">Selected Time: <span id="dT" class="fw-bold fs-5 mx-2">--</span>
+                                | Consulting Fee: ₹<span id="dF" class="fw-bold fs-5 ms-1">0</span></span>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-secondary small">Age</label>
+                                <input type="number" name="age" class="form-control shadow-sm" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-secondary small">Phone Number</label>
+                                <input type="tel" name="phone" class="form-control shadow-sm"
+                                    placeholder="10-digit number" value="{{ pre_phone }}" pattern="[0-9]{10}"
+                                    maxlength="10"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="form-label fw-bold text-secondary small">Reason for Visit / Symptoms</label>
+                            <textarea name="reason" class="form-control shadow-sm" style="height: 100px; resize: none;"
+                                required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-brand w-100 py-3 fs-5 shadow-lg rounded-pill" id="btn"
+                            disabled>Confirm & Book Slot</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const booked = {{ booked_slots | tojson }};
+
+    const shifts = {
+        'Dr. Ram (Cardiology)': { s: 9, e: 13, f: 1000 },
+        'Dr. Priya (Neurology)': { s: 14, e: 18, f: 1500 },
+        'Dr. Shiva (General)': { s: 10, e: 16, f: 500 }
+    };
+
+    const docE = document.getElementById('doctor'); const dateE = document.getElementById('date'); const grid = document.getElementById('grid');
+    dateE.setAttribute('min', new Date().toISOString().split('T')[0]);
+
+    function draw() {
+        const doc = docE.value; const d = dateE.value; if (!doc || !d) return;
+        const sh = shifts[doc]; document.getElementById('fInput').value = sh.f; document.getElementById('dF').innerText = sh.f;
+        grid.innerHTML = ''; let c = new Date(); c.setHours(sh.s, 0, 0); let e = new Date(); e.setHours(sh.e, 0, 0);
+        while (c < e) {
+            let t = c.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const isT = booked.some(s => s[0] === doc && s[1] === d && s[2] === t);
+            const box = document.createElement('div'); box.className = 'slot' + (isT ? ' taken' : ''); box.innerHTML = t;
+            if (!isT) {
+                box.onclick = () => {
+                    document.querySelectorAll('.slot').forEach(b => b.classList.remove('active'));
+                    box.classList.add('active'); document.getElementById('sTime').value = t; document.getElementById('dT').innerText = t;
+                    document.getElementById('info').classList.remove('d-none'); document.getElementById('btn').disabled = false;
+                };
+            }
+            grid.appendChild(box);
+            c.setMinutes(c.getMinutes() + 15);
+        }
+    }
+    docE.onchange = draw; dateE.onchange = draw;
+    if (docE.value && dateE.value) draw();
+</script>
+{% endblock %}

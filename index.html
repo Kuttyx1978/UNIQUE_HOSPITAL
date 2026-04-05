@@ -1,0 +1,826 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    /* --- 1. HERO & FLOATING FORM (UPGRADED) --- */
+    .apollo-banner {
+        background-image: linear-gradient(rgba(0, 30, 48, 0.75), rgba(0, 123, 143, 0.75)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding: 100px 0 160px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .apollo-title {
+        font-weight: 800;
+        font-size: 3.8rem;
+        line-height: 1.2;
+        color: #ffffff;
+        letter-spacing: -1px;
+    }
+
+    .apollo-title span {
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+
+    /* Animated floating blobs */
+    .blob-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
+    .blob-yellow {
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        background: linear-gradient(135deg, #fbd652 0%, #f9c022 100%);
+        border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%;
+        right: -20px;
+        top: 0%;
+        z-index: 1;
+        animation: morph 8s ease-in-out infinite, float 6s ease-in-out infinite;
+        box-shadow: 0 20px 40px rgba(249, 192, 34, 0.3);
+    }
+
+    .blob-cyan {
+        position: absolute;
+        width: 380px;
+        height: 280px;
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        border-radius: 40% 60% 70% 30% / 40% 50% 50% 60%;
+        right: 15%;
+        bottom: -5%;
+        z-index: 2;
+        animation: morph 10s ease-in-out infinite reverse, float 7s ease-in-out infinite 1s;
+        box-shadow: 0 20px 40px rgba(0, 242, 254, 0.2);
+    }
+
+    .blob-red {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+        border-radius: 50% 40% 60% 40%;
+        left: 5%;
+        bottom: 15%;
+        z-index: 3;
+        animation: float 5s ease-in-out infinite 2s;
+        box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    }
+
+    @keyframes morph {
+
+        0%,
+        100% {
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        }
+
+        34% {
+            border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+        }
+
+        67% {
+            border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+        }
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    /* Glassmorphic booking widget */
+    .booking-widget {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        margin-top: -100px;
+        position: relative;
+        z-index: 10;
+        width: 92%;
+        margin-left: auto;
+        margin-right: auto;
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .booking-widget:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    }
+
+    .widget-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a2a42;
+        margin-bottom: 25px;
+    }
+
+    .widget-input {
+        border-radius: 8px;
+        border: 1px solid #e1e8f0;
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .widget-input:focus {
+        border-color: #4facfe;
+        box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.1);
+        outline: none;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #fbd652 0%, #f9c022 100%);
+        color: #1a2a42;
+        font-weight: 700;
+        border-radius: 8px;
+        padding: 14px;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 8px 15px rgba(249, 192, 34, 0.2);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 20px rgba(249, 192, 34, 0.3);
+        color: #1a2a42;
+    }
+
+    /* --- 2. CENTRES OF EXCELLENCE --- */
+    .section-title {
+        font-weight: 800;
+        font-size: 2.5rem;
+        color: #1a2a42;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+
+    .section-title span {
+        color: #4facfe;
+    }
+
+    .coe-card {
+        display: flex;
+        align-items: center;
+        padding: 30px;
+        border-radius: 16px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        background-color: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .coe-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: inherit;
+        filter: brightness(0.95);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: -1;
+    }
+
+    .coe-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .coe-card:hover::before {
+        opacity: 1;
+    }
+
+    .coe-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        background: white;
+        margin-right: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.4s ease;
+    }
+
+    .coe-card:hover .coe-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .coe-title {
+        font-weight: 600;
+        color: #1a2a42;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .bg-cardiology {
+        background: linear-gradient(135deg, #ffeef0 0%, #f8cdd1 100%);
+    }
+
+    .bg-ortho {
+        background: linear-gradient(135deg, #fff8e1 0%, #fbe6ad 100%);
+    }
+
+    .bg-onco {
+        background: linear-gradient(135deg, #e8fbef 0%, #a4e4ba 100%);
+    }
+
+    .bg-neuro {
+        background: linear-gradient(135deg, #f3ebfe 0%, #dfcdfa 100%);
+    }
+
+    .bg-gastro {
+        background: linear-gradient(135deg, #e6f9ff 0%, #9fe7fd 100%);
+    }
+
+    .bg-nephro {
+        background: linear-gradient(135deg, #edf3fe 0%, #d8e4fa 100%);
+    }
+
+    /* --- 3. WHY CHOOSE US --- */
+    .why-choose-section {
+        background: #1a2a42;
+        background-image:
+            radial-gradient(circle at 100% 0%, rgba(79, 172, 254, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 0% 100%, rgba(0, 242, 254, 0.1) 0%, transparent 50%);
+        padding: 80px 0;
+        margin-top: 80px;
+        color: white;
+    }
+
+    .why-choose-section .section-title {
+        color: white;
+    }
+
+    .why-choose-section .section-title span {
+        color: #00f2fe;
+    }
+
+    .why-choose-section .text-muted {
+        color: #a4b2c1 !important;
+    }
+
+    .stat-number {
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+        font-size: 2.8rem;
+        margin-bottom: 5px;
+    }
+
+    .stat-text {
+        color: #d0d9e2;
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-border {
+        border-radius: 16px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.03) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-border .col-md-4 {
+        border-color: rgba(255, 255, 255, 0.05) !important;
+        transition: background 0.3s ease;
+    }
+
+    .stat-border .col-md-4:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* --- 4. ADVISED A PROCEDURE (TABS) --- */
+    .procedure-section {
+        padding: 100px 0;
+    }
+
+    .proc-nav-pills {
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .proc-nav-pills .nav-link {
+        background: #fff;
+        border: 1px solid #e1e8f0;
+        color: #5c6c7c;
+        border-radius: 12px;
+        padding: 18px 10px;
+        margin: 0;
+        text-align: center;
+        font-weight: 500;
+        font-size: 0.85rem;
+        width: calc(33.333% - 14px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .proc-nav-pills .nav-link img {
+        width: 40px;
+        margin-bottom: 12px;
+        filter: grayscale(100%) opacity(0.6);
+        transition: all 0.3s ease;
+    }
+
+    .proc-nav-pills .nav-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+        border-color: #b0d4f1;
+    }
+
+    .proc-nav-pills .nav-link.active {
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.1) 0%, rgba(79, 172, 254, 0.1) 100%);
+        color: #1a2a42;
+        border-color: #4facfe;
+        box-shadow: 0 8px 20px rgba(79, 172, 254, 0.15);
+        font-weight: 700;
+    }
+
+    .proc-nav-pills .nav-link.active img {
+        filter: grayscale(0%) opacity(1);
+        transform: scale(1.1);
+    }
+
+    /* Modern Tab Content Cards */
+    #v-pills-tabContent {
+        border: none !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
+        border-radius: 20px !important;
+    }
+
+    .proc-content-img {
+        width: 100%;
+        height: 380px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .proc-content-title {
+        font-weight: 800;
+        color: #1a2a42;
+        margin-bottom: 15px;
+        font-size: 2.2rem;
+    }
+
+    /* --- 5. BOTTOM CTA BANNER & FOOTER --- */
+    .cta-banner {
+        background: linear-gradient(135deg, #1a2a42 0%, #0b0f19 100%);
+        padding: 80px 0;
+        text-align: center;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-banner::before {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(0, 242, 254, 0.2) 0%, transparent 70%);
+        top: -150px;
+        left: -150px;
+        border-radius: 50%;
+    }
+
+    .cta-title {
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+
+    .cta-subtitle {
+        font-size: 1.2rem;
+        font-weight: 400;
+        margin-bottom: 30px;
+        color: #a4b2c1;
+    }
+
+    .btn-cta {
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        border: none;
+        color: white;
+        border-radius: 50px;
+        padding: 15px 40px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(79, 172, 254, 0.5);
+        color: white;
+    }
+
+    .main-footer {
+        background-color: #0b0f19;
+        color: #6e8499;
+        padding: 30px 0;
+        font-size: 0.9rem;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+</style>
+
+<section class="apollo-banner">
+    <div class="container px-4">
+        <div class="row align-items-center">
+            <div class="col-lg-7 text-center text-lg-start z-3">
+                <div class="fw-bold mb-2" style="font-size: 1.1rem; color: #00f2fe; text-transform: uppercase; letter-spacing: 2px;">Unique Hospitals, India</div>
+                <h1 class="apollo-title mb-3">
+                    Consult Our Trusted Surgeons, <br>
+                    <span>Book an Appointment</span>
+                </h1>
+                <p class="fw-medium" style="font-size: 1.15rem; color: rgba(255,255,255,0.85);">The best of modern healthcare to ensure you
+                    stay healthy, always.</p>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="blob-wrapper">
+                    <div class="blob-yellow"></div>
+                    <div class="blob-cyan"></div>
+                    <div class="blob-red"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="booking-widget">
+    <div class="widget-title">Book an Appointment</div>
+    <form action="/book" method="GET">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+                <input type="text" name="patient_name" class="form-control widget-input" placeholder="Enter Name"
+                    required>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select widget-input" name="location" required>
+                    <option value="" selected disabled>Select City</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Ahmedabad">Ahmedabad</option>
+                    <option value="Kochi">Kochi</option>
+                    <option value="Chandigarh">Chandigarh</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="tel" name="phone" class="form-control widget-input" placeholder="Enter Phone Number"
+                    pattern="[0-9]{10}" maxlength="10"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="date" class="form-control widget-input" required>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-submit w-100">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container text-center mt-5 pt-4 mb-5">
+    <h2 class="section-title">Centres Of <span>Excellence</span></h2>
+    <p class="text-muted mb-5 small">Combining the best specialists and equipment to provide you nothing short of the
+        best in healthcare.</p>
+
+    <div class="row g-3 px-lg-5">
+        <div class="col-md-6 col-lg-4">
+            <div class="coe-card bg-cardiology">
+                <div class="coe-icon"><img src="https://img.icons8.com/color/96/heart-with-pulse.png" alt="Cardiology" width="35"></div>
+                <h4 class="coe-title">Cardiology</h4>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="coe-card bg-ortho">
+                <div class="coe-icon"><img src="https://img.icons8.com/color/96/knee-joint.png" alt="Orthopedics" width="35"></div>
+                <h4 class="coe-title">Orthopedics</h4>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="coe-card bg-onco">
+                <div class="coe-icon"><img src="https://cdn-icons-png.flaticon.com/128/921/921609.png" alt="Oncology" width="30"></div>
+                <h4 class="coe-title">Oncology</h4>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="coe-card bg-neuro">
+                <div class="coe-icon"><img src="https://img.icons8.com/color/96/brain--v1.png" alt="Neurology" width="35"></div>
+                <h4 class="coe-title">Neurology</h4>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="coe-card bg-gastro">
+                <div class="coe-icon"><img src="https://img.icons8.com/color/96/stomach.png" alt="Gastroenterology" width="35"></div>
+                <h4 class="coe-title">Gastroenterology</h4>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="coe-card bg-nephro">
+                <div class="coe-icon text-center">
+                    <img src="https://cdn-icons-png.flaticon.com/128/921/921447.png" alt="Nephrology" width="28">
+                    <img src="https://cdn-icons-png.flaticon.com/128/5052/5052917.png" alt="Urology" width="28" style="margin-left: 2px;">
+                </div>
+                <h4 class="coe-title">Nephrology & Urology</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="why-choose-section">
+    <div class="container text-center">
+        <h2 class="section-title mb-3">Why Choose <span>Unique Healthcare?</span></h2>
+        <p class="text-muted mx-auto mb-5 small" style="max-width: 800px; line-height: 1.6;">
+            Established in 2026, Unique Healthcare has a robust presence across the healthcare ecosystem. From routine
+            wellness & preventive health care to innovative life-saving treatments and diagnostic services, Unique
+            Hospitals has touched more than 200 million lives from over 120 countries.
+        </p>
+
+        <div class="bg-white mx-auto shadow-sm stat-border" style="max-width: 900px;">
+            <div class="row g-0">
+                <div class="col-md-4 p-4 border-end border-bottom">
+                    <div class="stat-number">73 +</div>
+                    <div class="stat-text">Largest private healthcare network of Hospitals</div>
+                </div>
+                <div class="col-md-4 p-4 border-end border-bottom">
+                    <div class="stat-number">400 +</div>
+                    <div class="stat-text">Largest private network of clinics across India</div>
+                </div>
+                <div class="col-md-4 p-4 border-bottom">
+                    <div class="stat-number">1000 +</div>
+                    <div class="stat-text">Diagnostic centres across India</div>
+                </div>
+                <div class="col-md-4 p-4 border-end">
+                    <div class="stat-number">5000 +</div>
+                    <div class="stat-text">Pharmacies</div>
+                </div>
+                <div class="col-md-4 p-4 border-end">
+                    <div class="stat-number">10000 +</div>
+                    <div class="stat-text">Pin codes Served across India</div>
+                </div>
+                <div class="col-md-4 p-4">
+                    <div class="stat-number">11000 +</div>
+                    <div class="stat-text">Doctors</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="procedure-section container">
+    <div class="text-center mb-5">
+        <h2 class="section-title">Advised a <span>Procedure or Surgery?</span></h2>
+        <p class="text-muted">Be price assured for your treatment!</p>
+    </div>
+
+    <div class="row px-lg-4">
+        <div class="col-lg-5 mb-4">
+            <div class="nav flex-row flex-wrap proc-nav-pills" id="v-pills-tab" role="tablist"
+                aria-orientation="vertical">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-cardio" type="button"><img
+                        src="https://img.icons8.com/color/96/heart-with-pulse.png" alt="Cardiology">Cardiology</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-ortho" type="button"><img
+                        src="https://img.icons8.com/color/96/knee-joint.png" alt="Orthopedics">Orthopedics</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-onco" type="button"><img
+                        src="https://cdn-icons-png.flaticon.com/128/921/921609.png" alt="Oncology">Oncology</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-nephro" type="button"><img
+                        src="https://cdn-icons-png.flaticon.com/128/921/921447.png" alt="Nephrology">Nephrology</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-gastro" type="button"><img
+                        src="https://img.icons8.com/color/96/stomach.png"
+                        alt="Gastroenterology">Gastroenterology</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-uro" type="button"><img
+                        src="https://cdn-icons-png.flaticon.com/128/5052/5052917.png" alt="Urology">Urology</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-robotic" type="button"><img
+                        src="https://img.icons8.com/color/96/robot.png" alt="Robotic Surgery">Robotic Surgery</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-neuro" type="button"><img
+                        src="https://img.icons8.com/color/96/brain--v1.png" alt="Neurology">Neurology</button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-baria" type="button"><img
+                        src="https://img.icons8.com/color/96/scale.png" alt="Bariatric Surgery">Bariatric
+                    Surgery</button>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="tab-content bg-white p-4 border rounded-3 shadow-sm" id="v-pills-tabContent">
+
+                <div class="tab-pane fade show active" id="tab-cardio">
+                    <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=900&auto=format&fit=crop"
+                        alt="Cardiology Operating Room" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Cardiology</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Unique Hospitals is recognized as one of India's premier heart care
+                        centers. Our dedicated cardiology department is equipped with state-of-the-art Cath Labs and
+                        Cardiac Operation Theatres. We provide 24/7 emergency cardiac care, ensuring that critical
+                        patients receive immediate, life-saving interventions.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Coronary Artery Bypass Grafting (CABG)</li>
+                        <li>Minimally Invasive Valve Replacement</li>
+                        <li>Paediatric Heart Surgeries & Transplants</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-ortho">
+                    <img src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=900&auto=format&fit=crop"
+                        alt="Orthopedics Doctor with X-Ray" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Orthopedics</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Our Orthopedics Centre of Excellence specializes in bone, joint,
+                        and spine treatments. Utilizing advanced computer-navigated surgery and modern rehabilitation
+                        protocols, we ensure patients recover faster with maximum mobility and minimal pain.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Total Knee and Hip Replacements</li>
+                        <li>Sports Medicine & Arthroscopy</li>
+                        <li>Complex Trauma & Fracture Fixation</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-onco">
+                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=900&auto=format&fit=crop"
+                        alt="Oncology Treatment Equipment" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Oncology</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">The Oncology Institute at Unique Hospitals provides a
+                        multidisciplinary approach to cancer care. Our specialized tumor board—comprising medical,
+                        surgical, and radiation oncologists—works collaboratively to design personalized, targeted
+                        therapy plans for every patient.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Advanced Radiation Therapy (TrueBeam STx)</li>
+                        <li>Precision Surgical Oncology</li>
+                        <li>Chemotherapy & Immunotherapy</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-nephro">
+                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=900&auto=format&fit=crop"
+                        alt="Doctor consulting patient" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Nephrology</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Our Nephrology division offers comprehensive care for acute and
+                        chronic kidney diseases. With one of the largest hemodialysis units in the region and a highly
+                        successful renal transplant program, we are dedicated to restoring kidney health.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>24/7 Hemodialysis & Peritoneal Dialysis</li>
+                        <li>Kidney Transplantation</li>
+                        <li>Management of Diabetic Nephropathy</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-gastro">
+                    <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=900&auto=format&fit=crop"
+                        alt="Modern Medical Laboratory" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Gastroenterology</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Specializing in the prevention, diagnosis, and treatment of
+                        digestive tract and liver disorders. Our advanced endoscopy suites allow for minimally invasive
+                        diagnostic and therapeutic procedures with extreme precision.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Diagnostic & Therapeutic Endoscopy/Colonoscopy</li>
+                        <li>Liver Disease Management & Transplants</li>
+                        <li>Treatment of Inflammatory Bowel Disease (IBD)</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-uro">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=900&auto=format&fit=crop"
+                        alt="Doctor viewing medical scans" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Urology</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Our Urology department provides world-class treatment for
+                        conditions affecting the male and female urinary tract systems. We pioneer in painless,
+                        laser-based treatments for rapid recovery.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Laser Kidney Stone Removal</li>
+                        <li>Prostate Enlargement Treatments (HOLEP)</li>
+                        <li>Uro-Oncology (Prostate & Bladder Cancer)</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-robotic">
+                    <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?q=80&w=900&auto=format&fit=crop"
+                        alt="High-tech surgical equipment" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Robotic Surgery</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Robotic-assisted surgery represents the pinnacle of modern surgical
+                        care. By utilizing the Da Vinci surgical system, our top surgeons can perform complex procedures
+                        through tiny incisions with unparalleled precision, resulting in less pain and quicker return to
+                        normal life.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Robotic Cardiac & Thoracic Surgery</li>
+                        <li>Robotic Prostatectomy</li>
+                        <li>Complex Gynecological Surgeries</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-neuro">
+                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=900&auto=format&fit=crop"
+                        alt="Neurologist looking at brain scan" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Neurology</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Our Institute of Neurosciences offers advanced diagnostics and
+                        treatment for disorders of the nervous system. Our dedicated Stroke Unit ensures that patients
+                        receive 'golden hour' treatment to prevent long-term damage.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Acute Stroke Management</li>
+                        <li>Epilepsy & Movement Disorders (Parkinson's)</li>
+                        <li>Complex Brain & Spine Surgeries</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="tab-baria">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=900&auto=format&fit=crop"
+                        alt="Healthy lifestyle consultation" class="proc-content-img shadow-sm mb-4">
+                    <h3 class="proc-content-title text-dark">Bariatric Surgery</h3>
+                    <h5 class="fw-bold text-primary mb-3" style="font-size: 1.1rem;"><i
+                            class="bi bi-info-circle me-2"></i>About the Department</h5>
+                    <p class="text-muted small mb-3">Our Bariatric and Metabolic Surgery center provides comprehensive
+                        weight-loss solutions. We don't just offer surgery; we provide a complete lifestyle overhaul
+                        program including nutritional counseling and psychological support to help you achieve lasting
+                        health.</p>
+                    <ul class="text-muted small mb-0">
+                        <li>Laparoscopic Gastric Bypass</li>
+                        <li>Sleeve Gastrectomy</li>
+                        <li>Post-surgery Diet & Fitness Programs</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-banner">
+    <div class="container">
+        <h2 class="cta-title">Need a Doctor for Check-up?</h2>
+        <h3 class="cta-subtitle">Just Make An Appointment & You're Done!</h3>
+        <a href="/book" class="btn btn-cta mt-3">Book An Appointment</a>
+    </div>
+</div>
+
+<footer class="main-footer">
+    <div class="container">
+        &copy; Copyright 2026, Unique Hospitals Group. All Rights Reserved.
+    </div>
+</footer>
+
+{% endblock %}

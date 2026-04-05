@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Receipt</title>
+
+    <style>
+        /* --- Screen Styles (How it looks on the monitor) --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .receipt-card {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 650px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            color: #7f8c8d;
+        }
+
+        .top-sections {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        @media screen and (max-width: 600px) {
+            .top-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-box h3 {
+            font-size: 13px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .section-box p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .section-box strong {
+            color: #2c3e50;
+        }
+
+        .details h3 {
+            font-size: 13px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .details p {
+            margin: 12px 0;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            color: #555;
+        }
+
+        .details span {
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: right;
+        }
+
+        .total-section {
+            border-top: 2px dashed #ccc;
+            padding-top: 20px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            color: #27ae60;
+        }
+
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* --- Print Styles (How it looks on paper) --- */
+        @media print {
+            @page {
+                margin: 1cm;
+            }
+
+            html,
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+                height: 100vh;
+                overflow: hidden;
+                /* Prevents overflow onto a second blank page */
+            }
+
+            .receipt-card {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+                page-break-inside: avoid;
+                /* Keeps receipt section intact */
+            }
+
+            /* Hide the print button when actually printing */
+            .actions {
+                display: none !important;
+            }
+
+            /* Ensure text is dark and sharp */
+            body,
+            .receipt-card,
+            .details span,
+            .total-section,
+            .section-box p,
+            .section-box strong,
+            .section-box h3,
+            .details h3 {
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="receipt-card">
+        <div class="header">
+            <h2>Unique Hospital</h2>
+            <p>Official Appointment Receipt</p>
+        </div>
+
+        <div class="top-sections">
+            <div class="section-box">
+                <h3>Hospital Info</h3>
+                <p><strong>Unique Hospital</strong></p>
+                <p>123 Clinic Way</p>
+                <p>Health City, NY 10012</p>
+                <p>Ph: +1 (800) 123-4567</p>
+            </div>
+
+            <div class="section-box">
+                <h3>Patient Details</h3>
+                <p><strong>{{ appointment['patient_name'] }}</strong></p>
+                <p>Age: {{ appointment['age'] }} Years</p>
+                <p>Phone: {{ appointment['phone'] }}</p>
+            </div>
+
+            <div class="section-box">
+                <h3>Payment Details</h3>
+                <p>Receipt #: <strong>{{ appointment['id'] }}</strong></p>
+                <p>Method: <strong>Online</strong></p>
+                <p>Status: <strong style="color: #27ae60;">Paid</strong></p>
+            </div>
+        </div>
+
+        <div class="details">
+            <h3>Appointment Information</h3>
+            <p>Consulting Doctor: <span>{{ appointment['doctor'] }}</span></p>
+            <p>Appointment Date: <span>{{ appointment['date'] }}</span></p>
+            <p>Time Slot: <span>{{ appointment['time'] }}</span></p>
+        </div>
+
+        <div class="total-section">
+            <span>Consultation Fee:</span>
+            <span>₹{{ appointment['fee'] }}</span>
+        </div>
+
+        <div class="actions">
+            <button class="btn" onclick="window.print()">Print Receipt</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Open the print dialog i1mmediately when the page finishes loading
+        window.onload = function () {
+            setTimeout(function () {
+                window.print();
+            }, 500); // A half-second delay ensures CSS loads properly before printing
+        };
+
+        // 2. Redirect the patient to their dashboard after they print (or cancel the print)
+        window.onafterprint = function () {
+            window.location.href = "{{ url_for('my_appointments') }}";
+        };
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="col-md-6 col-lg-4 mt-5">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden border-top border-danger border-4">
+            <div class="card-header bg-white text-center pt-5 pb-3 border-0">
+                <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-shield-lock-fill" style="font-size: 2.5rem;"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">Admin Portal</h3>
+                <p class="text-muted small">Authorized personnel only</p>
+            </div>
+            
+            <div class="card-body px-4 px-md-5 pb-5 pt-2">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} small py-2 text-center rounded-3">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Admin ID</label>
+                        <input type="text" name="username" class="form-control form-control-lg fs-6 shadow-sm" style="border-radius: 8px; border: 1px solid #eaeaea;" placeholder="Enter admin" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted">Master Password</label>
+                        <input type="password" name="password" class="form-control form-control-lg fs-6 shadow-sm" style="border-radius: 8px; border: 1px solid #eaeaea;" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100 fw-bold py-2 shadow-sm" style="border-radius: 8px;">Authenticate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
